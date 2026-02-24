@@ -131,11 +131,6 @@ export default function LoginPage() {
                         </Button>
                     </form>
 
-                    <div className="mt-6 text-center text-sm text-navy/40">
-                        <p className="text-xs">Demo credentials:</p>
-                        <p className="text-amber-dark text-xs mt-1 font-mono">broker@demo.com / demo123</p>
-                    </div>
-
                     <div className="mt-6 pt-4 border-t border-cream-dark text-center">
                         <p className="text-[10px] uppercase tracking-[0.2em] text-navy/25">
                             glazeinsurance.in
