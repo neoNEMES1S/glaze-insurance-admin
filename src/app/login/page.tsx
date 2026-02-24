@@ -56,13 +56,13 @@ export default function LoginPage() {
             <Card className="w-full max-w-md mx-4 relative bg-white border-cream-dark shadow-xl shadow-navy/5">
                 <CardHeader className="space-y-5 text-center pb-2">
                     <div className="mx-auto flex flex-col items-center gap-4">
-                        <div className="w-20 h-20 relative rounded-2xl p-3 bg-navy flex items-center justify-center shadow-lg shadow-navy/20">
+                        <div className="w-40 h-auto relative p-2 flex items-center justify-center">
                             <Image
-                                src="/glaze-logo.svg"
+                                src="/glaze-logo.png"
                                 alt="Glaze Insurance Brokers"
-                                width={56}
-                                height={56}
-                                className="w-full h-full object-contain brightness-200"
+                                width={180}
+                                height={60}
+                                className="w-full h-full object-contain drop-shadow-sm"
                             />
                         </div>
                         <div>
