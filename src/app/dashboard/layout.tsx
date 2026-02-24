@@ -15,6 +15,7 @@ import {
     SidebarProvider,
     SidebarFooter,
     SidebarInset,
+    SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -165,8 +166,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 </Sidebar>
 
                 {/* Main Content + Footer */}
-                <SidebarInset className="flex-1 flex flex-col">
-                    <main className="flex-1 p-6">
+                <SidebarInset className="flex-1 flex flex-col min-w-0">
+                    {/* Mobile Header */}
+                    <header className="flex md:hidden h-14 items-center gap-2 border-b border-cream-dark px-4 bg-cream sticky top-0 z-10 w-full">
+                        <SidebarTrigger className="text-navy bg-white/50" />
+                        <span className="text-sm font-bold text-navy ml-2 flex items-center gap-2">
+                            <div className="w-6 h-6 rounded bg-navy flex items-center justify-center p-1">
+                                <Image src="/glaze-logo.svg" alt="Glaze" width={16} height={16} className="w-full h-full object-contain brightness-200" />
+                            </div>
+                            Glaze Admin
+                        </span>
+                    </header>
+                    <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
                         {children}
                     </main>
 

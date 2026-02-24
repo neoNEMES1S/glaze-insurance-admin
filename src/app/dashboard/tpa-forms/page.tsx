@@ -180,7 +180,7 @@ export default function TPAFormsPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
                         <ClipboardList className="w-6 h-6 text-amber" /> TPA Enrollment Forms
@@ -294,7 +294,7 @@ function SubmissionConfirmation({ submission, onViewTracker, onNewEnrollment }: 
                     </div>
 
                     {/* Summary Details */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex items-center gap-3 p-3 bg-cream/30 rounded-lg">
                             <Building2 className="w-5 h-5 text-amber" />
                             <div>
@@ -376,7 +376,7 @@ function SubmissionsList({ submissions, onView }: {
     return (
         <div className="space-y-4">
             {/* Stats Row */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                     { label: 'Total', count: submissions.length, icon: FileText, color: 'text-navy' },
                     { label: 'Approved', count: submissions.filter(s => s.currentStep === 'approved').length, icon: CheckCircle, color: 'text-emerald-600' },
@@ -727,13 +727,13 @@ function MediAssistForm({ onBack, onSubmitted }: { onBack: () => void; onSubmitt
             {/* Employee Details Grid */}
             <div className="bg-white border-x border-cream-dark px-5 pb-5">
                 <div className="border border-cream-dark rounded-lg overflow-hidden">
-                    <div className="grid grid-cols-1 md:grid-cols-3 divide-x divide-cream-dark">
+                    <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-cream-dark">
                         <FormField label="Employee ID" value={employeeId} readOnly />
                         <FormField label="Date of Hire" value={dateOfHire} readOnly />
                         <FormFieldSelect label="Gender" value={gender} onChange={setGender} options={['Male', 'Female', 'Other']} />
                     </div>
                     <div className="border-t border-cream-dark" />
-                    <div className="grid grid-cols-1 md:grid-cols-3 divide-x divide-cream-dark">
+                    <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-cream-dark">
                         <FormField label="Email" value={email} readOnly />
                         <FormFieldSelect label="Marital Status" value={maritalStatus} onChange={setMaritalStatus} options={['Single', 'Married', 'Divorced', 'Widowed']} />
                         <FormField label="Marriage Date" value={marriageDate} onChange={setMarriageDate} placeholder="date of marriage" type="date" />
@@ -742,13 +742,13 @@ function MediAssistForm({ onBack, onSubmitted }: { onBack: () => void; onSubmitt
             </div>
 
             {/* Beneficiary Details */}
-            <div className="bg-cream/50 border-x border-cream-dark px-5 py-5 space-y-4">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+            <div className="bg-cream/50 border-x border-cream-dark px-2 sm:px-5 py-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                         <h4 className="font-bold text-navy text-sm">Beneficiary Details</h4>
                         <span className="text-sm text-navy/50">(Floater Sum Insured (INR): {Number(sumInsured).toLocaleString('en-IN')})</span>
                     </div>
-                    <Button variant="outline" size="sm" className="border-amber/40 text-amber hover:bg-amber/10" onClick={() => setIsAddDialogOpen(true)}>
+                    <Button variant="outline" size="sm" className="border-amber/40 text-amber hover:bg-amber/10 self-start sm:self-auto" onClick={() => setIsAddDialogOpen(true)}>
                         <UserPlus className="w-4 h-4 mr-1.5" /> Add
                     </Button>
                 </div>
@@ -793,7 +793,7 @@ function MediAssistForm({ onBack, onSubmitted }: { onBack: () => void; onSubmitt
 
             {/* Voluntary Top-up Cover */}
             <div className="bg-white border-x border-cream-dark px-5 py-5 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <h4 className="font-bold text-navy text-sm">Voluntary Top-up Cover</h4>
                     <span className="text-xs text-navy/40">(Premium is inclusive of 18% GST)</span>
                 </div>
@@ -833,7 +833,7 @@ function MediAssistForm({ onBack, onSubmitted }: { onBack: () => void; onSubmitt
 
             {/* Voluntary OPD Cover */}
             <div className="bg-cream/50 border-x border-cream-dark px-5 py-5 space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <h4 className="font-bold text-navy text-sm">Voluntary OPD Cover</h4>
                     <span className="text-xs text-navy/40">(Premium is inclusive of 18% GST)</span>
                 </div>
@@ -861,10 +861,10 @@ function MediAssistForm({ onBack, onSubmitted }: { onBack: () => void; onSubmitt
             </div>
 
             {/* Submit */}
-            <div className="bg-cream/50 border border-t-0 border-cream-dark rounded-b-xl px-5 py-4 flex items-center justify-between">
-                <Button variant="outline" className="border-cream-dark text-navy/50 hover:text-navy" onClick={onBack} disabled={isSubmitting}>← Back to TPA List</Button>
+            <div className="bg-cream/50 border border-t-0 border-cream-dark rounded-b-xl px-5 py-4 flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-4">
+                <Button variant="outline" className="border-cream-dark text-navy/50 hover:text-navy w-full sm:w-auto" onClick={onBack} disabled={isSubmitting}>← Back to TPA List</Button>
                 <Button
-                    className={`px-6 font-semibold transition-all duration-300 ${declared && !isSubmitting ? 'bg-navy hover:bg-navy-dark text-white shadow-lg shadow-navy/15' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                    className={`px-6 font-semibold transition-all duration-300 w-full sm:w-auto ${declared && !isSubmitting ? 'bg-navy hover:bg-navy-dark text-white shadow-lg shadow-navy/15' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
                     disabled={!declared || isSubmitting}
                     onClick={handleSubmit}
                 >
