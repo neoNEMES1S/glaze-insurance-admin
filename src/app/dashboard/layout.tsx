@@ -96,13 +96,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex min-h-screen w-full bg-cream">
                 {/* Navy Sidebar */}
                 <Sidebar className="border-r-0">
-                    <SidebarHeader className="border-b border-white/10 p-5 bg-navy">
-                        <div className="flex flex-col items-center">
-                            <div className="w-24 h-28 relative">
-                                <Image src="/glaze-logo-dark.svg" alt="Glaze Insurance Brokers" width={96} height={112} className="w-full h-full object-contain drop-shadow-md" />
+                    <SidebarHeader className="border-b border-white/10 p-4 bg-navy">
+                        <div className="flex items-center gap-3">
+                            <div className="h-10 rounded-md bg-white px-2 py-1 flex items-center justify-center shrink-0">
+                                <Image src="/glaze-logo.png" alt="Glaze" width={100} height={32} className="h-full w-auto object-contain" />
                             </div>
-                            <div className="mt-1 text-center hidden">
-                                <p className="text-[10px] text-amber-light/70 tracking-widest uppercase">Admin Portal</p>
+                            <div>
+                                <p className="text-[10px] text-amber-light/70 tracking-wider uppercase">Admin Portal</p>
                             </div>
                         </div>
                     </SidebarHeader>
@@ -170,10 +170,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <header className="flex md:hidden h-14 items-center gap-2 border-b border-cream-dark px-4 bg-cream sticky top-0 z-10 w-full">
                         <SidebarTrigger className="text-navy bg-white/50" />
                         <span className="text-sm font-bold text-navy ml-2 flex items-center gap-2">
-                            <div className="w-5 h-6">
-                                <Image src="/glaze-logo.svg" alt="Glaze" width={20} height={24} className="w-full h-full object-contain" />
+                            <div className="h-8 rounded overflow-hidden">
+                                <Image src="/glaze-logo.png" alt="Glaze" width={80} height={24} className="w-full h-full object-contain" />
                             </div>
-                            Glaze Admin
                         </span>
                     </header>
                     <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
