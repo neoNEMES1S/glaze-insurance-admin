@@ -9,7 +9,7 @@ export default function EnrollmentsPage() {
                 <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
                     <FileSpreadsheet className="w-6 h-6 text-amber" /> Enrollments
                 </h1>
-                <p className="text-navy/50 mt-1">Track enrollment progress across tenants</p>
+                <p className="text-navy/50 mt-1">Track enrollment progress across clients</p>
             </div>
             <Card className="bg-white border-cream-dark">
                 <CardHeader><CardTitle className="text-navy">Enrollment Overview</CardTitle></CardHeader>

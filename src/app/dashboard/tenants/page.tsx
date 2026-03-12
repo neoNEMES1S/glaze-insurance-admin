@@ -58,18 +58,18 @@ export default function TenantsPage() {
                 <div>
                     <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
                         <Building2 className="w-6 h-6 text-amber" />
-                        Tenants
+                        Clients
                     </h1>
                     <p className="text-navy/50 mt-1">Manage your client organizations</p>
                 </div>
                 <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                     <DialogTrigger asChild>
                         <Button className="bg-navy hover:bg-navy-dark text-white shadow-md">
-                            <Plus className="w-4 h-4 mr-2" /> Add Tenant
+                            <Plus className="w-4 h-4 mr-2" /> Add Client
                         </Button>
                     </DialogTrigger>
                     <DialogContent className="bg-white border-cream-dark">
-                        <DialogHeader><DialogTitle className="text-navy">Create New Tenant</DialogTitle></DialogHeader>
+                        <DialogHeader><DialogTitle className="text-navy">Create New Client</DialogTitle></DialogHeader>
                         <div className="space-y-4 mt-4">
                             <div className="space-y-2">
                                 <Label className="text-navy/70">Company Name</Label>
@@ -85,7 +85,7 @@ export default function TenantsPage() {
                                     <Input placeholder="acme.com" className="border-cream-dark" />
                                 </div>
                             </div>
-                            <Button className="w-full bg-navy hover:bg-navy-dark text-white">Create Tenant</Button>
+                            <Button className="w-full bg-navy hover:bg-navy-dark text-white">Create Client</Button>
                         </div>
                     </DialogContent>
                 </Dialog>
@@ -93,7 +93,7 @@ export default function TenantsPage() {
 
             <div className="relative max-w-sm">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/30" />
-                <Input placeholder="Search tenants..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 border-cream-dark" />
+                <Input placeholder="Search clients..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-10 border-cream-dark" />
             </div>
 
             <Card className="bg-white border-cream-dark overflow-hidden">

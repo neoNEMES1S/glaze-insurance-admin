@@ -33,7 +33,7 @@ import {
 
 const navigation = [
     { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Tenants', href: '/dashboard/tenants', icon: Building2, roles: ['broker'] },
+    { name: 'Clients', href: '/dashboard/tenants', icon: Building2, roles: ['broker'] },
     { name: 'Employees', href: '/dashboard/employees', icon: Users },
     { name: 'TPA Forms', href: '/dashboard/tpa-forms', icon: ClipboardList },
     { name: 'Enrollments', href: '/dashboard/enrollments', icon: FileSpreadsheet },

@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
                     <CardContent className="h-64 flex items-center justify-center text-navy/30"><p>Charts coming soon...</p></CardContent>
                 </Card>
                 <Card className="bg-white border-cream-dark">
-                    <CardHeader><CardTitle className="text-navy">Tenant Comparison</CardTitle></CardHeader>
+                    <CardHeader><CardTitle className="text-navy">Client Comparison</CardTitle></CardHeader>
                     <CardContent className="h-64 flex items-center justify-center text-navy/30"><p>Charts coming soon...</p></CardContent>
                 </Card>
             </div>

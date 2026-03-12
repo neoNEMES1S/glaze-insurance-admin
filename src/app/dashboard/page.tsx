@@ -42,7 +42,7 @@ export default function DashboardPage() {
 
     const statCards = [
         {
-            title: 'Total Tenants',
+            title: 'Total Clients',
             value: stats?.total_tenants ?? 0,
             icon: Building2,
             color: 'text-amber',
