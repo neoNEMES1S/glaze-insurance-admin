@@ -28,7 +28,6 @@ const stateConfig = {
 export default function EmployeesPage() {
     const [search, setSearch] = useState('');
     const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
-    const [actionType, setActionType] = useState<'approve' | 'reject' | null>(null);
 
     const { data: employees, isLoading } = useQuery({
         queryKey: ['employees'],
@@ -44,12 +43,7 @@ export default function EmployeesPage() {
         },
     });
 
-    const handleAction = (employee: Employee, action: 'approve' | 'reject') => { setSelectedEmployee(employee); setActionType(action); };
-    const confirmAction = () => {
-        if (actionType === 'approve') toast.success(`Approved ${selectedEmployee?.first_name} ${selectedEmployee?.last_name}'s enrollment`);
-        else toast.error(`Rejected ${selectedEmployee?.first_name} ${selectedEmployee?.last_name}'s enrollment`);
-        setSelectedEmployee(null); setActionType(null);
-    };
+
 
     const filterByState = (state: string | null) => {
         let filtered = employees || [];
@@ -65,9 +59,9 @@ export default function EmployeesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
-                        <Users className="w-6 h-6 text-amber" /> Employees
+                        <Users className="w-6 h-6 text-amber" /> Team Members
                     </h1>
-                    <p className="text-navy/50 mt-1">Manage employee enrollments</p>
+                    <p className="text-navy/50 mt-1">View your team&apos;s enrollment status</p>
                 </div>
                 <Button className="bg-navy hover:bg-navy-dark text-white shadow-md">
                     <Upload className="w-4 h-4 mr-2" /> Import CSV
@@ -88,34 +82,16 @@ export default function EmployeesPage() {
                     <TabsTrigger value="all" className="data-[state=active]:bg-navy data-[state=active]:text-white">All Employees</TabsTrigger>
                     <TabsTrigger value="approved" className="data-[state=active]:bg-navy data-[state=active]:text-white">Approved</TabsTrigger>
                 </TabsList>
-                <TabsContent value="pending"><EmployeeTable employees={filterByState('submitted')} isLoading={isLoading} showActions onAction={handleAction} /></TabsContent>
-                <TabsContent value="all"><EmployeeTable employees={filterByState(null)} isLoading={isLoading} showActions={false} onAction={handleAction} /></TabsContent>
-                <TabsContent value="approved"><EmployeeTable employees={filterByState('approved')} isLoading={isLoading} showActions={false} onAction={handleAction} /></TabsContent>
+                <TabsContent value="pending"><EmployeeTable employees={filterByState('submitted')} isLoading={isLoading} /></TabsContent>
+                <TabsContent value="all"><EmployeeTable employees={filterByState(null)} isLoading={isLoading} /></TabsContent>
+                <TabsContent value="approved"><EmployeeTable employees={filterByState('approved')} isLoading={isLoading} /></TabsContent>
             </Tabs>
 
-            <Dialog open={!!selectedEmployee} onOpenChange={() => setSelectedEmployee(null)}>
-                <DialogContent className="bg-white border-cream-dark">
-                    <DialogHeader>
-                        <DialogTitle className="text-navy">{actionType === 'approve' ? 'Approve Enrollment' : 'Reject Enrollment'}</DialogTitle>
-                        <DialogDescription className="text-navy/50">
-                            {actionType === 'approve'
-                                ? `Are you sure you want to approve ${selectedEmployee?.first_name} ${selectedEmployee?.last_name}'s enrollment?`
-                                : `Are you sure you want to reject ${selectedEmployee?.first_name} ${selectedEmployee?.last_name}'s enrollment?`}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter className="gap-2">
-                        <Button variant="outline" onClick={() => setSelectedEmployee(null)} className="border-cream-dark">Cancel</Button>
-                        <Button onClick={confirmAction} className={actionType === 'approve' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-red-600 hover:bg-red-700 text-white'}>
-                            {actionType === 'approve' ? 'Approve' : 'Reject'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </div>
     );
 }
 
-function EmployeeTable({ employees, isLoading, showActions, onAction }: { employees: Employee[]; isLoading: boolean; showActions: boolean; onAction: (e: Employee, action: 'approve' | 'reject') => void; }) {
+function EmployeeTable({ employees, isLoading }: { employees: Employee[]; isLoading: boolean }) {
     return (
         <Card className="bg-white border-cream-dark overflow-hidden">
             <Table>
@@ -152,12 +128,6 @@ function EmployeeTable({ employees, isLoading, showActions, onAction }: { employ
                                 <TableCell>
                                     <div className="flex items-center gap-2">
                                         <Button variant="ghost" size="sm" className="text-navy/40 hover:text-navy"><Eye className="w-4 h-4" /></Button>
-                                        {showActions && (
-                                            <>
-                                                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => onAction(employee, 'approve')}><CheckCircle2 className="w-4 h-4" /></Button>
-                                                <Button size="sm" variant="destructive" onClick={() => onAction(employee, 'reject')}><XCircle className="w-4 h-4" /></Button>
-                                            </>
-                                        )}
                                     </div>
                                 </TableCell>
                             </TableRow>

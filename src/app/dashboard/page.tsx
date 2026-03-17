@@ -1,26 +1,27 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
 import { useAuthStore } from '@/lib/auth-store';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import {
-    Building2,
     Users,
     CheckCircle2,
     Clock,
     TrendingUp,
     AlertCircle,
     ShieldCheck,
+    FileText,
+    Heart,
+    CalendarClock,
 } from 'lucide-react';
 
-interface DashboardStats {
-    total_tenants: number;
-    total_employees: number;
+interface ClientDashboardStats {
+    covered_employees: number;
+    active_policies: number;
     pending_enrollments: number;
-    approved_enrollments: number;
+    claims_this_month: number;
     enrollment_rate: number;
 }
 
@@ -31,31 +32,29 @@ export default function DashboardPage() {
         queryKey: ['dashboard-stats'],
         queryFn: async () => {
             return {
-                total_tenants: 12,
-                total_employees: 2847,
-                pending_enrollments: 143,
-                approved_enrollments: 2584,
-                enrollment_rate: 90.8,
-            } as DashboardStats;
+                covered_employees: 423,
+                active_policies: 3,
+                pending_enrollments: 27,
+                claims_this_month: 8,
+                enrollment_rate: 94.2,
+            } as ClientDashboardStats;
         },
     });
 
     const statCards = [
         {
-            title: 'Total Clients',
-            value: stats?.total_tenants ?? 0,
-            icon: Building2,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: user?.role === 'broker',
-        },
-        {
-            title: 'Total Employees',
-            value: stats?.total_employees?.toLocaleString() ?? '0',
+            title: 'Covered Employees',
+            value: stats?.covered_employees?.toLocaleString() ?? '0',
             icon: Users,
             color: 'text-amber',
             bgColor: 'bg-amber/10',
-            show: true,
+        },
+        {
+            title: 'Active Policies',
+            value: stats?.active_policies ?? 0,
+            icon: ShieldCheck,
+            color: 'text-emerald-600',
+            bgColor: 'bg-emerald-100',
         },
         {
             title: 'Pending Enrollments',
@@ -63,28 +62,26 @@ export default function DashboardPage() {
             icon: Clock,
             color: 'text-amber',
             bgColor: 'bg-amber/10',
-            show: true,
         },
         {
-            title: 'Approved',
-            value: stats?.approved_enrollments?.toLocaleString() ?? '0',
-            icon: CheckCircle2,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: true,
+            title: 'Claims This Month',
+            value: stats?.claims_this_month ?? 0,
+            icon: FileText,
+            color: 'text-navy',
+            bgColor: 'bg-navy/10',
         },
-    ].filter(card => card.show);
+    ];
 
     return (
         <div className="space-y-6">
             {/* Header */}
             <div>
                 <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
-                    <ShieldCheck className="w-6 h-6 text-amber" />
+                    <Heart className="w-6 h-6 text-amber" />
                     Welcome back, {user?.first_name}!
                 </h1>
                 <p className="text-navy/50 mt-1">
-                    Here&apos;s an overview of your insurance portfolio
+                    Here&apos;s a snapshot of your company&apos;s insurance coverage
                 </p>
             </div>
 
@@ -132,7 +129,7 @@ export default function DashboardPage() {
                             Enrollment Rate
                         </CardTitle>
                         <CardDescription className="text-navy/40">
-                            Overall portfolio enrollment completion
+                            Employee enrollment completion for your company
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -141,7 +138,7 @@ export default function DashboardPage() {
                                 {stats?.enrollment_rate ?? 0}%
                             </span>
                             <Badge className="bg-amber/15 text-amber-dark border-amber/25 mb-2">
-                                +2.5% from last month
+                                +1.8% from last month
                             </Badge>
                         </div>
                         <div className="mt-4 h-3 rounded-full bg-cream-dark overflow-hidden">
@@ -157,7 +154,7 @@ export default function DashboardPage() {
                     <CardHeader>
                         <CardTitle className="text-navy flex items-center gap-2">
                             <AlertCircle className="w-5 h-5 text-amber" />
-                            Pending Actions
+                            Action Items
                         </CardTitle>
                         <CardDescription className="text-navy/40">
                             Items requiring your attention
@@ -165,16 +162,25 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="flex items-center justify-between p-3 rounded-lg bg-amber/8 border border-amber/15 hover:bg-amber/12 transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">Enrollments to review</span>
+                            <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-amber" />
+                                <span className="text-navy text-sm">Employees pending enrollment</span>
+                            </div>
                             <Badge className="bg-amber text-white font-semibold">{stats?.pending_enrollments ?? 0}</Badge>
                         </div>
                         <div className="flex items-center justify-between p-3 rounded-lg bg-cream-dark/50 border border-cream-dark hover:bg-cream-dark transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">Documents pending</span>
-                            <Badge variant="secondary" className="bg-navy/10 text-navy/60">23</Badge>
+                            <div className="flex items-center gap-2">
+                                <CalendarClock className="w-4 h-4 text-navy/40" />
+                                <span className="text-navy text-sm">Policy renewal due</span>
+                            </div>
+                            <Badge variant="secondary" className="bg-navy/10 text-navy/60">45 days</Badge>
                         </div>
                         <div className="flex items-center justify-between p-3 rounded-lg bg-cream-dark/50 border border-cream-dark hover:bg-cream-dark transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">TPA sync issues</span>
-                            <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">0</Badge>
+                            <div className="flex items-center gap-2">
+                                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                                <span className="text-navy text-sm">Outstanding claims</span>
+                            </div>
+                            <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">{stats?.claims_this_month ?? 0}</Badge>
                         </div>
                     </CardContent>
                 </Card>

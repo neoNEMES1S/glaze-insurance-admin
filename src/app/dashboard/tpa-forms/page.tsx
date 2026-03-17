@@ -185,7 +185,7 @@ export default function TPAFormsPage() {
                     <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
                         <ClipboardList className="w-6 h-6 text-amber" /> TPA Enrollment Forms
                     </h1>
-                    <p className="text-navy/50 mt-1">Manage employee enrollments with TPA providers</p>
+                    <p className="text-navy/50 mt-1">Submit employee enrollments with TPA providers</p>
                 </div>
             </div>
 

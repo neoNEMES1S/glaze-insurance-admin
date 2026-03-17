@@ -9,10 +9,10 @@ const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
 
 const DEMO_USER = {
     id: 'demo-001',
-    email: 'broker@demo.com',
+    email: 'hr@acmecorp.com',
     first_name: 'Sarah',
-    last_name: 'Admin',
-    role: 'broker' as const,
+    last_name: 'Sharma',
+    role: 'hr' as const,
     tenant_id: 'demo-tenant',
 };
 
@@ -21,7 +21,7 @@ export interface User {
     email: string;
     first_name: string;
     last_name: string;
-    role: 'broker' | 'hr' | 'employee';
+    role: 'hr' | 'employee';
     tenant_id: string;
 }
 

@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Glaze Insurance Brokers — Admin Portal",
-  description: "Trusted Risk Advisors — Insurance Orchestration & Admin Dashboard",
+  title: "Glaze Insurance — Client Portal",
+  description: "Employee Benefits & Insurance Management Portal",
   icons: {
     icon: "/glaze-logo.svg",
   },
