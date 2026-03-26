@@ -2,6 +2,9 @@
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
+// Demo mode — when true, all API calls return mock data without hitting the backend
+const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+
 // Token storage
 const TOKEN_KEY = 'access_token';
 const REFRESH_KEY = 'refresh_token';
@@ -93,9 +96,43 @@ async function refreshAccessToken(): Promise<boolean> {
     return false;
 }
 
+// ── Demo mock data for all API routes ──
+const DEMO_MOCK_DATA: Record<string, unknown> = {
+    '/api/v1/dashboard/stats': {
+        total_tenants: 12,
+        total_employees: 2847,
+        pending_enrollments: 143,
+        approved_enrollments: 2584,
+        enrollment_rate: 90.8,
+    },
+    '/api/v1/auth/me': {
+        id: 'demo-001',
+        email: 'broker@demo.com',
+        first_name: 'Sarah',
+        last_name: '',
+        role: 'broker',
+        tenant_id: 'demo-tenant',
+    },
+    '/api/v1/tenants': [],
+    '/api/v1/employees': [],
+    '/api/v1/enrollments': [],
+    '/api/v1/tpa-forms': [],
+    '/api/v1/analytics': {},
+    '/api/v1/wellness': {},
+};
+
+function getDemoData<T>(path: string): T {
+    // Try exact match first, then prefix match
+    if (DEMO_MOCK_DATA[path] !== undefined) return DEMO_MOCK_DATA[path] as T;
+    const match = Object.keys(DEMO_MOCK_DATA).find((key) => path.startsWith(key));
+    return (match ? DEMO_MOCK_DATA[match] : {}) as T;
+}
+
 // API methods
 export const api = {
     async get<T>(path: string): Promise<T> {
+        if (DEMO_MODE) return getDemoData<T>(path);
+
         const res = await fetchWithAuth(path);
         if (!res.ok) {
             const error = await res.json().catch(() => ({}));
@@ -105,6 +142,8 @@ export const api = {
     },
 
     async post<T>(path: string, body?: unknown): Promise<T> {
+        if (DEMO_MODE) return getDemoData<T>(path);
+
         const res = await fetchWithAuth(path, {
             method: 'POST',
             body: body ? JSON.stringify(body) : undefined,
@@ -117,6 +156,8 @@ export const api = {
     },
 
     async patch<T>(path: string, body: unknown): Promise<T> {
+        if (DEMO_MODE) return getDemoData<T>(path);
+
         const res = await fetchWithAuth(path, {
             method: 'PATCH',
             body: JSON.stringify(body),
@@ -129,6 +170,8 @@ export const api = {
     },
 
     async delete(path: string): Promise<void> {
+        if (DEMO_MODE) return;
+
         const res = await fetchWithAuth(path, { method: 'DELETE' });
         if (!res.ok) {
             const error = await res.json().catch(() => ({}));
@@ -140,6 +183,12 @@ export const api = {
 // Auth API
 export const authApi = {
     async login(email: string, password: string) {
+        if (DEMO_MODE) {
+            const mockTokens = { access_token: 'demo-access', refresh_token: 'demo-refresh' };
+            setTokens(mockTokens.access_token, mockTokens.refresh_token);
+            return mockTokens;
+        }
+
         const formData = new URLSearchParams();
         formData.append('username', email);
         formData.append('password', password);
@@ -161,6 +210,11 @@ export const authApi = {
     },
 
     async logout() {
+        if (DEMO_MODE) {
+            clearTokens();
+            return;
+        }
+
         try {
             await api.post('/api/v1/auth/logout');
         } finally {
@@ -169,6 +223,17 @@ export const authApi = {
     },
 
     async me() {
+        if (DEMO_MODE) {
+            return getDemoData<{
+                id: string;
+                email: string;
+                first_name: string;
+                last_name: string;
+                role: string;
+                tenant_id: string;
+            }>('/api/v1/auth/me');
+        }
+
         return api.get<{
             id: string;
             email: string;
@@ -179,3 +244,4 @@ export const authApi = {
         }>('/api/v1/auth/me');
     },
 };
+

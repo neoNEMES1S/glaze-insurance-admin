@@ -62,6 +62,7 @@ export default function LoginPage() {
                                 alt="Glaze Insurance Brokers"
                                 width={180}
                                 height={60}
+                                priority
                                 className="w-full h-full object-contain drop-shadow-sm"
                             />
                         </div>

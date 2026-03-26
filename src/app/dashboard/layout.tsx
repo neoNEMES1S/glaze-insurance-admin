@@ -98,11 +98,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Sidebar className="border-r-0">
                     <SidebarHeader className="border-b border-white/10 p-4 bg-navy">
                         <div className="flex items-center gap-3">
-                            <div className="h-10 rounded-md bg-white px-2 py-1 flex items-center justify-center shrink-0">
-                                <Image src="/glaze-logo.png" alt="Glaze" width={100} height={32} className="h-full w-auto object-contain" />
+                            <div className="h-[52px] w-[52px] rounded-full bg-white flex items-center justify-center shrink-0 shadow-md shadow-black/20 overflow-hidden">
+                                <Image src="/glaze-icon.png" alt="Glaze" width={150} height={150} priority className="h-[115%] w-[115%] object-contain" />
                             </div>
                             <div>
-                                <p className="text-[10px] text-amber-light/70 tracking-wider uppercase">Admin Portal</p>
+                                <p className="text-[10px] text-amber-light/70 tracking-wider uppercase">Client Portal</p>
                             </div>
                         </div>
                     </SidebarHeader>
@@ -149,7 +149,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                                 <p className="text-sm font-medium text-white truncate">
                                     {user?.first_name} {user?.last_name}
                                 </p>
-                                <p className="text-xs text-amber-light/60 capitalize">{user?.role}</p>
+                                <p className="text-xs text-amber-light/60 capitalize">User</p>
                             </div>
                         </div>
                         <Button
@@ -171,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <SidebarTrigger className="text-navy bg-white/50" />
                         <span className="text-sm font-bold text-navy ml-2 flex items-center gap-2">
                             <div className="h-8 rounded overflow-hidden">
-                                <Image src="/glaze-logo.png" alt="Glaze" width={80} height={24} className="w-full h-full object-contain" />
+                                <Image src="/glaze-logo.png" alt="Glaze" width={80} height={24} priority className="w-full h-full object-contain" />
                             </div>
                         </span>
                     </header>

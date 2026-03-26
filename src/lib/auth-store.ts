@@ -11,7 +11,7 @@ const DEMO_USER = {
     id: 'demo-001',
     email: 'broker@demo.com',
     first_name: 'Sarah',
-    last_name: 'Admin',
+    last_name: '',
     role: 'broker' as const,
     tenant_id: 'demo-tenant',
 };
@@ -77,14 +77,9 @@ export const useAuthStore = create<AuthState>()(
             },
 
             checkAuth: async () => {
-                // Demo mode: trust persisted state
+                // Demo mode: always use latest DEMO_USER
                 if (DEMO_MODE) {
-                    const state = get();
-                    if (state.user) {
-                        set({ isAuthenticated: true, isLoading: false });
-                    } else {
-                        set({ user: null, isAuthenticated: false, isLoading: false });
-                    }
+                    set({ user: DEMO_USER, isAuthenticated: true, isLoading: false });
                     return;
                 }
 
