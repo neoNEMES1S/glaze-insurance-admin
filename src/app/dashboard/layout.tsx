@@ -21,24 +21,26 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
     LayoutDashboard,
-    Building2,
     Users,
     FileSpreadsheet,
-    BarChart3,
     Heart,
     LogOut,
     Loader2,
     ClipboardList,
+    ShieldCheck,
+    FileText,
+    HelpCircle,
 } from 'lucide-react';
 
 const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Clients', href: '/dashboard/tenants', icon: Building2, roles: ['broker'] },
-    { name: 'Employees', href: '/dashboard/employees', icon: Users },
-    { name: 'TPA Forms', href: '/dashboard/tpa-forms', icon: ClipboardList },
-    { name: 'Enrollments', href: '/dashboard/enrollments', icon: FileSpreadsheet },
-    { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, roles: ['broker'] },
+    { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'My Policy', href: '/dashboard/my-policy', icon: ShieldCheck },
+    { name: 'Team Members', href: '/dashboard/employees', icon: Users },
+    { name: 'Enrollment Forms', href: '/dashboard/tpa-forms', icon: ClipboardList },
+    { name: 'My Enrollments', href: '/dashboard/enrollments', icon: FileSpreadsheet },
+    { name: 'Claims', href: '/dashboard/claims', icon: FileText },
     { name: 'Wellness', href: '/dashboard/wellness', icon: Heart },
+    { name: 'Support', href: '/dashboard/support', icon: HelpCircle },
 ];
 
 const footerLinks = [
@@ -81,10 +83,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         return null;
     }
 
-    const filteredNav = navigation.filter(item => {
-        if (!item.roles) return true;
-        return item.roles.includes(user?.role || '');
-    });
+    const filteredNav = navigation;
 
     const handleLogout = async () => {
         await logout();

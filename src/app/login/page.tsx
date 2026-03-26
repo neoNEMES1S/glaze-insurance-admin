@@ -71,7 +71,7 @@ export default function LoginPage() {
                                 Glaze Insurance
                             </CardTitle>
                             <CardDescription className="text-navy-light/60 text-sm mt-1 tracking-wide">
-                                Trusted Risk Advisors — Admin Portal
+                                Employee Benefits — Client Portal
                             </CardDescription>
                         </div>
                     </div>
@@ -87,7 +87,7 @@ export default function LoginPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@glazeinsurance.in"
+                                placeholder="hr@yourcompany.com"
                                 {...register('email')}
                                 className="bg-cream/50 border-cream-dark text-navy placeholder:text-navy/30 focus:border-amber/50 focus:ring-amber/20 h-11"
                             />
