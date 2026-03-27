@@ -11,8 +11,8 @@ const DEMO_USER = {
     id: 'demo-001',
     email: 'hr@acmecorp.com',
     first_name: 'Sarah',
-    last_name: 'Admin',
-    role: 'broker' as const,
+    last_name: '',
+    role: 'hr' as const,
     tenant_id: 'demo-tenant',
 };
 

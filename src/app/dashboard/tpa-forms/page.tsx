@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -132,9 +133,18 @@ function getStatusBadge(step: WorkflowStep) {
     return map[step];
 }
 
-// ── Main Page ────────────────────────────────────────────────────
-export default function TPAFormsPage() {
+// ── Main Page Content ──────────────────────────────────────────────
+function TPAFormsContent() {
+    const searchParams = useSearchParams();
     const [selectedTPA, setSelectedTPA] = useState<string | null>(null);
+
+    // Auto-select TPA from query parameter (e.g. ?tpa=medi_assist)
+    useEffect(() => {
+        const tpaParam = searchParams.get('tpa');
+        if (tpaParam && tpaProviders.some(t => t.id === tpaParam && t.status === 'active')) {
+            setSelectedTPA(tpaParam);
+        }
+    }, [searchParams]);
     const [activeTab, setActiveTab] = useState<'new' | 'submissions'>('new');
     const [submissions, setSubmissions] = useState<Submission[]>(mockSubmissions);
     const [viewingSubmission, setViewingSubmission] = useState<Submission | null>(null);
@@ -227,6 +237,15 @@ export default function TPAFormsPage() {
                 />
             )}
         </div>
+    );
+}
+
+// ── Page Wrapper (Suspense boundary for useSearchParams) ──
+export default function TPAFormsPage() {
+    return (
+        <Suspense fallback={<div className="p-8 text-center text-navy/50">Loading TPA Forms...</div>}>
+            <TPAFormsContent />
+        </Suspense>
     );
 }
 

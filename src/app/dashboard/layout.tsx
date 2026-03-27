@@ -35,10 +35,8 @@ import {
 const navigation = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
     { name: 'My Policy', href: '/dashboard/my-policy', icon: ShieldCheck },
-    { name: 'Team Members', href: '/dashboard/employees', icon: Users },
     { name: 'Enrollment Forms', href: '/dashboard/tpa-forms', icon: ClipboardList },
     { name: 'My Enrollments', href: '/dashboard/enrollments', icon: FileSpreadsheet },
-    { name: 'Claims', href: '/dashboard/claims', icon: FileText },
     { name: 'Wellness', href: '/dashboard/wellness', icon: Heart },
     { name: 'Support', href: '/dashboard/support', icon: HelpCircle },
 ];
@@ -98,7 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <SidebarHeader className="border-b border-white/10 p-4 bg-navy">
                         <div className="flex items-center gap-3">
                             <div className="h-[52px] w-[52px] rounded-full bg-white flex items-center justify-center shrink-0 shadow-md shadow-black/20 overflow-hidden">
-                                <Image src="/glaze-icon.png" alt="Glaze" width={150} height={150} priority className="h-[115%] w-[115%] object-contain" />
+                                <Image src="/glaze-icon.png" alt="Glaze" width={150} height={150} priority className="h-[70%] w-[70%] object-contain" />
                             </div>
                             <div>
                                 <p className="text-[10px] text-amber-light/70 tracking-wider uppercase">Client Portal</p>

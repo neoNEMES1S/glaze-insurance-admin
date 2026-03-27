@@ -144,7 +144,7 @@ export default function MyPolicyPage() {
             ) : (
                 <div className="space-y-4">
                     {policies?.map((policy) => {
-                        const status = statusConfig[policy.status];
+                        const status = statusConfig[policy.status] ?? { label: policy.status, className: 'bg-slate-100 text-slate-600', icon: Clock };
                         return (
                             <Card key={policy.id} className="bg-white border-cream-dark hover:border-amber/30 hover:shadow-md hover:shadow-amber/5 transition-all duration-300">
                                 <CardHeader className="pb-3">

@@ -1,26 +1,112 @@
 'use client';
-/* eslint-disable @next/next/no-img-element */
 
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth-store';
-import { motion } from 'framer-motion';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { SummaryCard, SummaryCardSkeleton } from '@/components/dashboard/summary-card';
+import { PolicyCard, PolicyCardSkeleton, type PolicyData } from '@/components/dashboard/policy-card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'sonner';
 import {
-    Building2,
-    Users,
-    CheckCircle2,
-    Clock,
+    ShieldCheck,
+    FileStack,
+    ClipboardCheck,
+    Activity,
+    IndianRupee,
+    Search,
+    SlidersHorizontal,
+    X,
     TrendingUp,
     AlertCircle,
-    ShieldCheck,
+    CheckCircle2,
+    Clock,
+    Building2,
+    Users,
 } from 'lucide-react';
+import { toast } from 'sonner';
+
+// ── Mock data ──────────────────────────────────────────────
+
+const MOCK_POLICIES: PolicyData[] = [
+    {
+        id: '1',
+        title: 'Medi Assist',
+        policyNumber: 'POL-MA-2025-001',
+        validity: '31 Mar 2026',
+        status: 'Confirmed',
+        enrollmentDaysLeft: 24,
+        insurerName: 'ICICI Lombard',
+        tag: 'Sponsored',
+        sumInsured: '₹5,00,000',
+        logoUrl: '/logos/medi-assist-transparent.png',
+    },
+    {
+        id: '2',
+        title: 'GPA Accident Cover',
+        policyNumber: 'POL-GPA-2025-042',
+        validity: '15 Jun 2026',
+        status: 'Confirmed',
+        enrollmentDaysLeft: 45,
+        insurerName: 'HDFC ERGO',
+        tag: 'Mandatory',
+        sumInsured: '₹10,00,000',
+    },
+    {
+        id: '3',
+        title: 'Top-Up Health Plan',
+        policyNumber: 'POL-TUP-2025-018',
+        validity: '31 Mar 2026',
+        status: 'Pending',
+        enrollmentDaysLeft: 14,
+        insurerName: 'Star Health',
+        tag: 'Voluntary',
+        sumInsured: '₹15,00,000',
+    },
+    {
+        id: '4',
+        title: 'Motor Fleet Insurance',
+        policyNumber: 'POL-MFI-2025-007',
+        validity: '30 Sep 2025',
+        status: 'Confirmed',
+        enrollmentDaysLeft: 0,
+        insurerName: 'Bajaj Allianz',
+        tag: 'Sponsored',
+        sumInsured: '₹2,00,000',
+    },
+    {
+        id: '5',
+        title: 'D&O Liability Cover',
+        policyNumber: 'POL-DNO-2025-003',
+        validity: '31 Dec 2025',
+        status: 'Draft',
+        enrollmentDaysLeft: 60,
+        insurerName: 'Tata AIG',
+        tag: 'Sponsored',
+        sumInsured: '₹1,00,00,000',
+    },
+    {
+        id: '6',
+        title: 'Workmen Compensation',
+        policyNumber: 'POL-WMC-2025-009',
+        validity: '31 Mar 2026',
+        status: 'Expired',
+        enrollmentDaysLeft: 0,
+        insurerName: 'New India Assurance',
+        tag: 'Mandatory',
+    },
+];
 
 interface DashboardStats {
+    available_policies: number;
+    enrolled_policies: number;
+    in_drive_policies: number;
+    total_premium: number;
     total_tenants: number;
     total_employees: number;
     pending_enrollments: number;
@@ -28,14 +114,24 @@ interface DashboardStats {
     enrollment_rate: number;
 }
 
+// ── Component ──────────────────────────────────────────────
+
+type FilterTag = 'All' | PolicyData['tag'] | PolicyData['status'];
+
 export default function DashboardPage() {
     const router = useRouter();
     const user = useAuthStore((s) => s.user);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [activeFilter, setActiveFilter] = useState<FilterTag>('All');
 
     const { data: stats, isLoading } = useQuery({
         queryKey: ['dashboard-stats'],
         queryFn: async () => {
             return {
+                available_policies: 5,
+                enrolled_policies: 3,
+                in_drive_policies: 5,
+                total_premium: 59000,
                 total_tenants: 12,
                 total_employees: 2847,
                 pending_enrollments: 143,
@@ -45,144 +141,177 @@ export default function DashboardPage() {
         },
     });
 
-    const statCards = [
+    const { data: policies, isLoading: policiesLoading } = useQuery({
+        queryKey: ['policies'],
+        queryFn: async () => MOCK_POLICIES,
+    });
+
+    const filteredPolicies = useMemo(() => {
+        if (!policies) return [];
+        return policies.filter((p) => {
+            const matchesSearch =
+                searchQuery === '' ||
+                p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.policyNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                p.insurerName.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesFilter =
+                activeFilter === 'All' ||
+                p.tag === activeFilter ||
+                p.status === activeFilter;
+
+            return matchesSearch && matchesFilter;
+        });
+    }, [policies, searchQuery, activeFilter]);
+
+    const filterTags: FilterTag[] = ['All', 'Sponsored', 'Voluntary', 'Mandatory', 'Confirmed', 'Pending'];
+
+    const summaryCards = [
         {
-            title: 'Total Clients',
-            value: stats?.total_tenants ?? 0,
-            icon: Building2,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: user?.role === 'broker',
+            title: 'Available Policies',
+            value: stats?.available_policies ?? 0,
+            icon: FileStack,
+            gradient: 'bg-gradient-to-br from-blue-600 to-blue-800',
+            iconBg: 'bg-white/20',
         },
         {
-            title: 'Total Employees',
-            value: stats?.total_employees?.toLocaleString() ?? '0',
-            icon: Users,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: true,
+            title: 'Enrolled Policies',
+            value: stats?.enrolled_policies ?? 0,
+            icon: ClipboardCheck,
+            gradient: 'bg-gradient-to-br from-amber to-amber-dark',
+            iconBg: 'bg-white/20',
         },
         {
-            title: 'Pending Enrollments',
-            value: stats?.pending_enrollments ?? 0,
-            icon: Clock,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: true,
+            title: 'In Drive Policies',
+            value: stats?.in_drive_policies ?? 0,
+            icon: Activity,
+            gradient: 'bg-gradient-to-br from-purple-600 to-purple-800',
+            iconBg: 'bg-white/20',
         },
         {
-            title: 'Approved',
-            value: stats?.approved_enrollments?.toLocaleString() ?? '0',
-            icon: CheckCircle2,
-            color: 'text-amber',
-            bgColor: 'bg-amber/10',
-            show: true,
+            title: 'Total Premium',
+            value: `₹${(stats?.total_premium ?? 0).toLocaleString('en-IN')}`,
+            icon: IndianRupee,
+            gradient: 'bg-gradient-to-br from-rose-500 to-rose-700',
+            iconBg: 'bg-white/20',
         },
-    ].filter(card => card.show);
+    ];
 
     return (
         <div className="space-y-6">
-            {/* Header */}
+            {/* ── Header ─────────────────────────────────── */}
             <div>
                 <h1 className="text-2xl font-bold text-navy flex items-center gap-2">
                     <ShieldCheck className="w-6 h-6 text-amber" />
-                    Welcome back, {user?.first_name}!
+                    Welcome back, {user?.first_name || 'Admin'}!
                 </h1>
                 <p className="text-navy/50 mt-1">
                     Here&apos;s an overview of your insurance portfolio
                 </p>
             </div>
 
-            {/* Stats Grid */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {isLoading ? (
-                    Array.from({ length: 4 }).map((_, i) => (
-                        <Card key={i} className="bg-white border-cream-dark">
-                            <CardHeader className="pb-2">
-                                <Skeleton className="h-4 w-24 bg-cream-dark" />
-                            </CardHeader>
-                            <CardContent>
-                                <Skeleton className="h-8 w-16 bg-cream-dark" />
-                            </CardContent>
-                        </Card>
-                    ))
-                ) : (
-                    statCards.map((stat, i) => (
-                        <Card
-                            key={i}
-                            className="bg-white border-cream-dark hover:border-amber/30 hover:shadow-md hover:shadow-amber/5 transition-all duration-300 group cursor-default"
-                        >
-                            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                <CardTitle className="text-sm font-medium text-navy/50">
-                                    {stat.title}
-                                </CardTitle>
-                                <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                                    <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="text-3xl font-bold text-navy">{stat.value}</div>
-                            </CardContent>
-                        </Card>
-                    ))
-                )}
+            {/* ── Summary Cards ──────────────────────────── */}
+            <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
+                {isLoading
+                    ? Array.from({ length: 4 }).map((_, i) => <SummaryCardSkeleton key={i} />)
+                    : summaryCards.map((card, i) => (
+                          <SummaryCard key={card.title} {...card} delay={i * 0.08} />
+                      ))}
             </div>
 
-            {/* Enrollment Rate & Pending Actions */}
-            <div className="grid gap-4 md:grid-cols-2">
-                <Card className="bg-white border-cream-dark">
-                    <CardHeader>
-                        <CardTitle className="text-navy flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-amber" />
-                            Enrollment Rate
-                        </CardTitle>
-                        <CardDescription className="text-navy/40">
-                            Overall portfolio enrollment completion
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex items-end gap-4">
-                            <span className="text-5xl font-bold text-navy">
-                                {stats?.enrollment_rate ?? 0}%
-                            </span>
-                            <Badge className="bg-amber/15 text-amber-dark border-amber/25 mb-2">
-                                +2.5% from last month
-                            </Badge>
-                        </div>
-                        <div className="mt-4 h-3 rounded-full bg-cream-dark overflow-hidden">
-                            <div
-                                className="h-full glaze-gradient rounded-full transition-all duration-700 ease-out"
-                                style={{ width: `${stats?.enrollment_rate ?? 0}%` }}
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
 
-                <Card className="bg-white border-cream-dark">
-                    <CardHeader>
-                        <CardTitle className="text-navy flex items-center gap-2">
-                            <AlertCircle className="w-5 h-5 text-amber" />
-                            Pending Actions
-                        </CardTitle>
-                        <CardDescription className="text-navy/40">
-                            Items requiring your attention
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-amber/8 border border-amber/15 hover:bg-amber/12 transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">Enrollments to review</span>
-                            <Badge className="bg-amber text-white font-semibold">{stats?.pending_enrollments ?? 0}</Badge>
+
+            {/* ── Policy Section Header ──────────────── */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-2">
+                <div>
+                    <h2 className="text-xl font-bold text-navy">Your Policies</h2>
+                    <p className="text-sm text-navy/40 mt-0.5">
+                        {filteredPolicies.length} {filteredPolicies.length === 1 ? 'policy' : 'policies'} found
+                    </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                    {/* Search */}
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy/30" />
+                        <Input
+                            placeholder="Search policies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="pl-9 pr-8 w-64 bg-white border-cream-dark text-navy placeholder:text-navy/30 focus:border-amber/50 focus:ring-amber/20 rounded-xl h-10"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={() => setSearchQuery('')}
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-navy/30 hover:text-navy/60 transition-colors"
+                            >
+                                <X className="w-3.5 h-3.5" />
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Filter Chips */}
+            <div className="flex flex-wrap items-center gap-2">
+                <SlidersHorizontal className="w-4 h-4 text-navy/30 mr-1" />
+                {filterTags.map((tag) => (
+                    <button
+                        key={tag}
+                        onClick={() => setActiveFilter(tag)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 ${
+                            activeFilter === tag
+                                ? 'bg-navy text-white border-navy shadow-md shadow-navy/15'
+                                : 'bg-white text-navy/60 border-cream-dark hover:border-amber/30 hover:text-navy'
+                        }`}
+                    >
+                        {tag}
+                    </button>
+                ))}
+            </div>
+
+            {/* ── Policy Grid ────────────────────────── */}
+            <div className="grid gap-5 md:grid-cols-2">
+                {policiesLoading ? (
+                    Array.from({ length: 4 }).map((_, i) => <PolicyCardSkeleton key={i} />)
+                ) : filteredPolicies.length === 0 ? (
+                    <div className="md:col-span-2 flex flex-col items-center justify-center py-16 text-center">
+                        <div className="w-16 h-16 rounded-2xl bg-cream-dark/60 flex items-center justify-center mb-4">
+                            <Search className="w-7 h-7 text-navy/25" />
                         </div>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-cream-dark/50 border border-cream-dark hover:bg-cream-dark transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">Documents pending</span>
-                            <Badge variant="secondary" className="bg-navy/10 text-navy/60">23</Badge>
-                        </div>
-                        <div className="flex items-center justify-between p-3 rounded-lg bg-cream-dark/50 border border-cream-dark hover:bg-cream-dark transition-colors cursor-pointer">
-                            <span className="text-navy text-sm">TPA sync issues</span>
-                            <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">0</Badge>
-                        </div>
-                    </CardContent>
-                </Card>
+                        <p className="text-navy/50 font-medium">No policies match your search</p>
+                        <p className="text-sm text-navy/30 mt-1">Try adjusting your filters or search terms</p>
+                        <Button
+                            size="sm"
+                            variant="outline"
+                            className="mt-4 border-cream-dark text-navy/50 hover:border-amber/30 rounded-xl"
+                            onClick={() => {
+                                setSearchQuery('');
+                                setActiveFilter('All');
+                            }}
+                        >
+                            Clear Filters
+                        </Button>
+                    </div>
+                ) : (
+                    <AnimatePresence mode="popLayout">
+                        {filteredPolicies.map((policy, i) => (
+                            <PolicyCard
+                                key={policy.id}
+                                policy={policy}
+                                delay={i * 0.06}
+                                onEnroll={(id) => {
+                                    if (policy.id === '1') {
+                                        router.push('/dashboard/tpa-forms?tpa=medi_assist');
+                                    } else {
+                                        toast.info(`Opening enrollment for ${policy.title}`);
+                                    }
+                                }}
+                                onViewDetails={(id) => router.push(`/dashboard/policy-details?policy=${encodeURIComponent(policy.title)}&policyNumber=${encodeURIComponent(policy.policyNumber)}`)}
+                            />
+                        ))}
+                    </AnimatePresence>
+                )}
             </div>
         </div>
     );

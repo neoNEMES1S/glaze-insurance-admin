@@ -155,28 +155,28 @@ function ActionTileCard({ tile, index, onClick }: { tile: ActionTile; index: num
             whileTap={{ scale: 0.98 }}
             onClick={onClick}
             className={`
-                group relative flex flex-col items-center justify-center gap-3 p-6
-                bg-white rounded-2xl border-2 border-cream-dark/60
-                shadow-sm hover:shadow-lg transition-all duration-300
-                cursor-pointer min-h-[140px]
+                group relative flex flex-col items-center justify-center gap-4 p-6
+                bg-white rounded-[24px] border border-slate-100 overflow-hidden
+                shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)]
+                transition-all duration-300 cursor-pointer min-h-[160px]
                 ${tile.borderColor}
             `}
         >
+            {/* Hover shimmer */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-slate-100/30 to-transparent opacity-0 group-hover:opacity-100 -translate-x-full group-hover:translate-x-full transition-all duration-700 pointer-events-none" />
+
             {/* Icon Container */}
             <div className={`
-                p-4 rounded-2xl ${tile.bgColor}
+                p-4 rounded-2xl ${tile.bgColor} z-10
                 group-hover:scale-110 transition-transform duration-300
             `}>
                 <tile.icon className={`w-7 h-7 ${tile.color}`} strokeWidth={1.8} />
             </div>
 
             {/* Label */}
-            <span className="text-sm font-semibold text-navy text-center leading-tight">
+            <span className="text-[15px] font-semibold text-slate-700 text-center leading-tight z-10">
                 {tile.label}
             </span>
-
-            {/* Hover shimmer */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-0 group-hover:opacity-100 -translate-x-full group-hover:translate-x-full transition-all duration-700" />
         </motion.button>
     );
 }
@@ -213,7 +213,7 @@ function PolicyDetailsContent() {
 
     const handleTileClick = (tile: ActionTile) => {
         if (tile.id === 'enrollment') {
-            router.push(`/dashboard/enroll?policy=${encodeURIComponent(policyName)}&policyNumber=${encodeURIComponent(policyNumber)}`);
+            router.push('/dashboard/tpa-forms?tpa=medi_assist');
         } else {
             toast.info(`${tile.label} — Coming soon`, {
                 description: tile.description,
@@ -333,7 +333,7 @@ function PolicyDetailsContent() {
             </motion.div>
 
             {/* Action Tiles Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-4">
                 {actionTiles.map((tile, i) => (
                     <ActionTileCard
                         key={tile.id}
