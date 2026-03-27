@@ -41,7 +41,7 @@ const MOCK_POLICIES: PolicyData[] = [
         validity: '31 Mar 2026',
         status: 'Confirmed',
         enrollmentDaysLeft: 24,
-        insurerName: 'ICICI Lombard',
+        insurerName: 'Medi Assist',
         tag: 'Sponsored',
         sumInsured: '₹5,00,000',
         logoUrl: '/logos/medi-assist-transparent.png',
